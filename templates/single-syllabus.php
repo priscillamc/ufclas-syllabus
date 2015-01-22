@@ -9,7 +9,7 @@
 		<div id="content" class="container">
 		
 		  <article id="main-content" class="span-23 box" role="main">
-
+			<h2>Course Syllabus Archives</h2>
 			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 			  
 			  <?php ufandshands_content_title(); //page title ?>
@@ -25,8 +25,12 @@
 				    <?php while( $attachments->get() ) : ?>
 				      <li>
 				        <a href="<?php echo $attachments->url(); ?>" target="_blank">
-				        	<?php echo $attachments->field( 'syllabus_course_number' ); ?> - <?php echo $attachments->field( 'title' ); ?>, (<?php echo $attachments->field( 'syllabus_instructor' ); ?>)
-				        </a>
+                            <?php if( $attachments->field('syllabus_course_number') ) { 
+				        		echo $attachments->field( 'syllabus_course_number' ) . ' - ' . $attachments->field( 'title' ) . ', (' . $attachments->field( 'syllabus_instructor' ) . ')';
+				        	} else { 
+                            	echo $attachments->field( 'title' );
+                            }?>
+                        </a>
 				      </li>
 				    <?php endwhile; ?>
 				  </ul>

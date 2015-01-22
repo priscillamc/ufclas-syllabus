@@ -3,7 +3,7 @@
 Plugin Name: UF CLAS - Syllabus
 Plugin URI: http://it.clas.ufl.edu/
 Description: Manage syllabi for department sites
-Version: 0.0.2
+Version: 0.0.3
 Author: Priscilla Chapman (CLAS IT)
 Author URI: http://it.clas.ufl.edu/
 License: GPL2
@@ -91,7 +91,7 @@ function ufclas_register_syllabus() {
 	$cpt_labels = array(
 		'name'                => _x( 'Syllabus Page', 'Syllabus Archive', 'ufclas' ),
 		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas' ),
-		'menu_name'           => __( 'Syllabus Pages', 'ufclas' ),
+		'menu_name'           => __( 'Syllabus', 'ufclas' ),
 		'parent_item_colon'   => __( 'Parent Item', 'ufclas' ),
 		'all_items'           => __( 'All Syllabus Pages', 'ufclas' ),
 		'view_item'           => __( 'View Syllabus Page', 'ufclas' ),
@@ -131,6 +131,8 @@ function ufclas_register_syllabus() {
 		'capability_type'     => 'page',
 	);
 	register_post_type( 'ufclas_syllabus', $cpt_args );
+	
+	ufclas_syllabus_rewrite();
 	
 }
 // Register the syllabus archive custom post type and taxonomies
@@ -194,7 +196,7 @@ function ufclas_syllabus_templates( $template_path ){
 	}
 	
 	// Change template for the newsletter page
-	if( is_post_type_archive( 'ufclas_syllabus' ) ){
+	if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
 		$template_path = plugin_dir_path( __FILE__ ) . 'templates/archive-syllabus.php';
 	}
 	
@@ -289,7 +291,7 @@ add_filter( 'attachments_default_instance', '__return_false' ); // disable the d
 /====================================================*/
 
 // Remove Page links to and Expiration metaboxes
-function ufclas_remove_plugin_metaboxes() {  
+function ufclas_syllabus_remove_plugin_metaboxes() {  
 	$post_types = get_post_types();
 	$custom_post_types = array_diff($post_types, array('post','page','tribe_events'));
 	foreach ($custom_post_types as $cpt) {
@@ -297,6 +299,6 @@ function ufclas_remove_plugin_metaboxes() {
 		remove_meta_box('page-links-to', $cpt, 'advanced');
 	}
 }
-add_action('do_meta_boxes', 'ufclas_remove_plugin_metaboxes'); 
+add_action('do_meta_boxes', 'ufclas_syllabus_remove_plugin_metaboxes'); 
 
 
