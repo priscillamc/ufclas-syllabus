@@ -3,7 +3,7 @@
 Plugin Name: UF CLAS - Syllabus
 Plugin URI: http://it.clas.ufl.edu/
 Description: Manage syllabi for department sites
-Version: 0.0.3
+Version: 0.0.4
 Author: Priscilla Chapman (CLAS IT)
 Author URI: http://it.clas.ufl.edu/
 License: GPL2
