@@ -17,24 +17,24 @@
 				<?php the_content('<p class="serif">Read the rest of this page &raquo;</p>'); ?>
 				
 				<!-- Attachments -->
-				<?php $attachments = new Attachments( 'my_attachments' ); /* pass the instance name */ ?>
-				
-				<?php if( $attachments->exist() ) : ?>
-
-				  <ul>
-				    <?php while( $attachments->get() ) : ?>
-				      <li>
-				        <a href="<?php echo $attachments->url(); ?>" target="_blank">
-                            <?php if( $attachments->field('syllabus_course_number') ) { 
-				        		echo $attachments->field( 'syllabus_course_number' ) . ' - ' . $attachments->field( 'title' ) . ', (' . $attachments->field( 'syllabus_instructor' ) . ')';
-				        	} else { 
-                            	echo $attachments->field( 'title' );
-                            }?>
-                        </a>
-				      </li>
-				    <?php endwhile; ?>
-				  </ul>
-				<?php endif; ?>
+				<?php 
+				if ( class_exists('Attachments') ):
+					$attachments = new Attachments( 'syllabus_attachments' ); /* pass the instance name */
+					if( $attachments->exist() ) : ?>
+                      <ul>
+                        <?php while( $attachments->get() ) : ?>
+                          <li>
+                            <a href="<?php echo $attachments->url(); ?>" target="_blank">
+                                <?php if( $attachments->field('syllabus_course_number') ) { 
+                                    echo $attachments->field( 'syllabus_course_number' ) . ' - ' . $attachments->field( 'title' ) . ', (' . $attachments->field( 'syllabus_instructor' ) . ')';
+                                } else { 
+                                    echo $attachments->field( 'title' );
+                                }?>
+                            </a>
+                          </li>
+                        <?php endwhile; ?>
+                      </ul>
+				<?php endif; endif; ?>
 				<!-- End Attachments -->
 				
 				<?php wp_link_pages(array('before' => '<p><strong>Pages:</strong> ', 'after' => '</p>', 'next_or_number' => 'number')); ?>

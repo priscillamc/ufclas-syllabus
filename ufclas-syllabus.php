@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: UF CLAS - Syllabus
-Plugin URI: http://it.clas.ufl.edu/
+Plugin URI: https://it.clas.ufl.edu/
 Description: Manage syllabi for department sites
-Version: 0.0.4
+Version: 1.0.0
 Author: Priscilla Chapman (CLAS IT)
-Author URI: http://it.clas.ufl.edu/
+Author URI: https://it.clas.ufl.edu/
+Build Date: 20160822
 License: GPL2
 */
 
@@ -89,7 +90,7 @@ function ufclas_register_syllabus() {
 	// Register custom post type
 	
 	$cpt_labels = array(
-		'name'                => _x( 'Syllabus Page', 'Syllabus Archive', 'ufclas' ),
+		'name'                => _x( 'Course Syllabi', 'Syllabus Archive', 'ufclas' ),
 		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas' ),
 		'menu_name'           => __( 'Syllabus', 'ufclas' ),
 		'parent_item_colon'   => __( 'Parent Item', 'ufclas' ),
@@ -190,16 +191,19 @@ register_deactivation_hook( __FILE__, 'ufclas_syllabus_deactivation');
  
 function ufclas_syllabus_templates( $template_path ){
 	
-	// Change template for the newsletter page
-	if( is_singular('ufclas_syllabus') ){
-		$template_path = plugin_dir_path( __FILE__ ) . 'templates/single-syllabus.php';
-	}
+	$current_theme = wp_get_theme();
 	
-	// Change template for the newsletter page
-	if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
-		$template_path = plugin_dir_path( __FILE__ ) . 'templates/archive-syllabus.php';
+	if ( 'ufclas-ufl-responsive' == $current_theme->get_template() ) {
+		// Change template for the newsletter page
+		if( is_singular('ufclas_syllabus') ){
+			$template_path = plugin_dir_path( __FILE__ ) . 'templates/single-syllabus.php';
+		}
+		
+		// Change template for the newsletter page
+		if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
+			$template_path = plugin_dir_path( __FILE__ ) . 'templates/archive-syllabus.php';
+		}
 	}
-	
 	return $template_path;
 }
 
@@ -213,13 +217,19 @@ add_filter( 'template_include', 'ufclas_syllabus_templates', 1 );
 
 /====================================================*/
 
-function my_attachments( $attachments )
+function syllabus_attachments( $attachments )
 {
   $fields         = array(
     array(
       'name'      => 'syllabus_course_number', 
       'type'      => 'text',       
       'label'     => __( 'Course Number/Section', 'ufclas' ),
+      'default'   => '',
+    ),
+	array(
+      'name'      => 'syllabus_section', 
+      'type'      => 'text',       
+      'label'     => __( 'Section', 'ufclas' ),
       'default'   => '',
     ),
     array(
@@ -239,7 +249,7 @@ function my_attachments( $attachments )
   $args = array(
 
     // title of the meta box (string)
-    'label'         => 'Syllbus',
+    'label'         => 'Syllabus',
 
     // all post types to utilize (string|array)
     'post_type'     => array( 'ufclas_syllabus' ),
@@ -277,10 +287,10 @@ function my_attachments( $attachments )
 
   );
 
-  $attachments->register( 'my_attachments', $args ); // unique instance name
+  $attachments->register( 'syllabus_attachments', $args ); // unique instance name
 }
 
-add_action( 'attachments_register', 'my_attachments' );
+add_action( 'attachments_register', 'syllabus_attachments' );
 add_filter( 'attachments_default_instance', '__return_false' ); // disable the default instance
 
 
