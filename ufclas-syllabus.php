@@ -3,23 +3,24 @@
 Plugin Name: UF CLAS - Syllabus
 Plugin URI: https://it.clas.ufl.edu/
 Description: Manage syllabi for department sites
-Version: 1.0.0
+Version: 1.1.0
 Author: Priscilla Chapman (CLAS IT)
 Author URI: https://it.clas.ufl.edu/
-Build Date: 20160822
 License: GPL2
+Build Date: 20160823
 */
 
-/*====================================================/
+// Path to the root of the plugin, used for including template files
+define( 'UFCLAS_SYLLABUS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+require UFCLAS_SYLLABUS_PLUGIN_DIR . 'inc/class-ufclas-syllabus-loader.php';
 
-	Syllabus Page custom post type
-
-/====================================================*/
-
+/**
+ * Register Syllabus page custom post type
+ * @since 0.0.4
+ */
 function ufclas_register_syllabus() {
 	
 	// Register Syllabus Year Taxonomy
-	
 	$year_labels = array(
 		'name'                       => _x( 'Syllabus Year', 'Taxonomy General Name', 'ufclas_syllabus' ),
 		'singular_name'              => _x( 'Syllabus Year', 'Taxonomy Singular Name', 'ufclas_syllabus' ),
@@ -56,7 +57,6 @@ function ufclas_register_syllabus() {
 	register_taxonomy( 'ufclas_syllabus_year', array( 'ufclas_syllabus' ), $year_args );
 	
 	// Register syllabus semester categories
-	
 	$semester_labels = array(
 		'name'                       => _x( 'Semesters', 'Taxonomy General Name', 'ufclas_syllabus' ),
 		'singular_name'              => _x( 'Semester', 'Taxonomy Singular Name', 'ufclas_syllabus' ),
@@ -88,7 +88,6 @@ function ufclas_register_syllabus() {
 	
 
 	// Register custom post type
-	
 	$cpt_labels = array(
 		'name'                => _x( 'Course Syllabi', 'Syllabus Archive', 'ufclas' ),
 		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas' ),
@@ -114,7 +113,7 @@ function ufclas_register_syllabus() {
 		'label'               => __( 'ufclas_syllabus', 'ufclas' ),
 		'description'         => __( 'Post Type for course syllabi', 'ufclas' ),
 		'labels'              => $cpt_labels,
-		'supports'            => array( 'title' ),
+		'supports'            => array( 'title', 'editor' ),
 		'taxonomies'          => array('ufclas_syllabus_semester', 'ufclas_syllabus_year'),
 		'hierarchical'        => true,
 		'public'              => true,
@@ -134,22 +133,25 @@ function ufclas_register_syllabus() {
 	register_post_type( 'ufclas_syllabus', $cpt_args );
 	
 	ufclas_syllabus_rewrite();
-	
 }
 // Register the syllabus archive custom post type and taxonomies
 add_action( 'init', 'ufclas_register_syllabus', 0 );
 
 
-// Add rewrite rule to allow permalink structure (syllabus/%semester_year%/%syllabus_page_name%)
-
+/** 
+ * Add rewrite rule to allow permalink structure (syllabus/%semester_year%/%syllabus_page_name%)
+ * @since 0.0.4
+ */
 function ufclas_syllabus_rewrite() {
     add_rewrite_rule("^syllabus/([^/]+)/([^/]+)/?",'index.php?post_type=ufclas_syllabus&syllabus_year=$matches[1]&syllabus=$matches[2]','top');
 }
 add_action('init','ufclas_syllabus_rewrite', 0 );
 
 
-// Change the syllabus page permalink structure
-
+/** 
+ * Change the syllabus page permalink structure
+ * @since 0.0.4
+ */
 function ufclas_syllabus_permalink( $permalink, $post ) {
      if ( is_wp_error($post) || 'ufclas_syllabus' != $post->post_type || empty($post->post_name) )
         return $permalink;
@@ -168,8 +170,10 @@ function ufclas_syllabus_permalink( $permalink, $post ) {
 } 
 add_filter('post_type_link', 'ufclas_syllabus_permalink', 10, 2);
 
-// Flush rewrite rules on activation and deactivation
-
+/**
+ * Flush rewrite rules on activation and deactivation
+ * @since 0.0.4
+ */
 function ufclas_syllabus_activation() {
  
     // Register post type and taxonomy rewrite rules
@@ -187,36 +191,11 @@ register_activation_hook( __FILE__, 'ufclas_syllabus_activation');
 register_deactivation_hook( __FILE__, 'ufclas_syllabus_deactivation');
 
 
- // Add custom templates 
- 
-function ufclas_syllabus_templates( $template_path ){
-	
-	$current_theme = wp_get_theme();
-	
-	if ( 'ufclas-ufl-responsive' == $current_theme->get_template() ) {
-		// Change template for the newsletter page
-		if( is_singular('ufclas_syllabus') ){
-			$template_path = plugin_dir_path( __FILE__ ) . 'templates/single-syllabus.php';
-		}
-		
-		// Change template for the newsletter page
-		if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
-			$template_path = plugin_dir_path( __FILE__ ) . 'templates/archive-syllabus.php';
-		}
-	}
-	return $template_path;
-}
-
-add_filter( 'template_include', 'ufclas_syllabus_templates', 1 );
-
-
-/*====================================================/
-
-	Attachments
-	Documentation: https://github.com/jchristopher/attachments/blob/master/docs/usage.md
-
-/====================================================*/
-
+/**
+ * Attachments plugin functions
+ * @since 0.0.4
+ * @see https://github.com/jchristopher/attachments/blob/master/docs/usage.md	Attachments documentation
+ */
 function syllabus_attachments( $attachments )
 {
   $fields         = array(
@@ -300,7 +279,10 @@ add_filter( 'attachments_default_instance', '__return_false' ); // disable the d
 
 /====================================================*/
 
-// Remove Page links to and Expiration metaboxes
+/**
+ * Remove metaboxes from Page links to and Expiration for syllabus pages
+ * @since 0.0.4
+ */
 function ufclas_syllabus_remove_plugin_metaboxes() {  
 	$post_types = get_post_types();
 	$custom_post_types = array_diff($post_types, array('post','page','tribe_events'));
@@ -311,4 +293,52 @@ function ufclas_syllabus_remove_plugin_metaboxes() {
 }
 add_action('do_meta_boxes', 'ufclas_syllabus_remove_plugin_metaboxes'); 
 
+/**
+ * Add custom templates depending on theme
+ * @since 0.0.4
+ */
+function ufclas_syllabus_templates( $template_path ){
+	
+	// Change template for archive page if files exist in theme
+	if( is_singular( 'ufclas_syllabus' ) ){
+		$templates = new UFCLAS_Syllabus_Template_Loader;
+		$template_path = $templates->get_template_part( 'single', 'syllabus', false );
+	}
+	if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
+		$templates = new UFCLAS_Syllabus_Template_Loader;
+		$template_path = $templates->get_template_part( 'archive', 'syllabus', false );
+	}
+	return $template_path;
+}
+add_filter( 'template_include', 'ufclas_syllabus_templates', 1 );
 
+/**
+ * Add ufclas-syllabus shortcode
+ * @todo Add parameters so shortcode can be used on any page
+ * @since 1.1.0
+ */
+function ufclas_syllabus_shortcode() {
+	$template_loader = new UFCLAS_Syllabus_Template_Loader;
+	ob_start();
+	$template_loader->get_template_part( 'content', 'syllabus' );
+	return ob_get_clean();
+}
+add_shortcode( 'ufclas-syllabus', 'ufclas_syllabus_shortcode' );
+
+/**
+ * Add ufclas-syllabus shortcode to single syllabus pages
+ * @param string $content Content from the editor
+ * @return string Modified content
+ * @since 1.1.0
+ */
+function ufclas_syllabus_content( $content ) {
+	
+	if ( is_singular('ufclas_syllabus') ){
+		$current_theme = wp_get_theme();
+		if ('ufclas-ufl-responsive' != wp_get_theme()->get_template()){
+			$content .= do_shortcode('[ufclas-syllabus]');	
+		}
+	}
+	return $content;
+}
+add_filter( 'the_content', 'ufclas_syllabus_content' );
