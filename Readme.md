@@ -1,8 +1,5 @@
 UF CLAS - Syllabus
 ====================================
-Plugin URI: https://it.clas.ufl.edu/
-Author: Priscilla Chapman (CLAS IT)
-Author URI: https://it.clas.ufl.edu/
 
 Description
 ------------
@@ -10,7 +7,8 @@ Allows users to upload syllabi documents for a semester to course syllabi pages 
 
 Requirements
 ------------
-- Attachments plugin
+- WordPress
+- [Attachments](https://wordpress.org/plugins/attachments/)
 
 Installation
 ------------
@@ -19,7 +17,10 @@ Installation
 
 To-Do:
 ------
-
+- Sort the syllabus pages by year and semester in reverse chronological order
+- Add filter/action to allow breadcrumbs on single pages
+- Edit: Need to see full name of the document
+- Edit: Need to be able to view the document
 
 Changelog
 ---------

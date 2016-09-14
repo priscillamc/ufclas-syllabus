@@ -3,11 +3,11 @@
 Plugin Name: UF CLAS - Syllabus
 Plugin URI: https://it.clas.ufl.edu/
 Description: Manage syllabi for department sites
-Version: 1.1.0
+Version: 1.1.1
 Author: Priscilla Chapman (CLAS IT)
 Author URI: https://it.clas.ufl.edu/
 License: GPL2
-Build Date: 20160823
+Build Date: 20160913
 */
 
 // Path to the root of the plugin, used for including template files
@@ -271,6 +271,43 @@ function syllabus_attachments( $attachments )
 
 add_action( 'attachments_register', 'syllabus_attachments' );
 add_filter( 'attachments_default_instance', '__return_false' ); // disable the default instance
+
+/**
+ * Custom sort attachment function
+ *
+ * @param object $a First attachment argument
+ * @param object $b Second attachment argument
+ * @return int Sort order
+ * @since 1.1.1
+ * @todo Add 'syllabus_section'
+ */
+function ufclas_syllabus_attachments_sort( $a, $b ){
+	$order = 0;
+	$field_order = array('syllabus_course_number', 'title', 'syllabus_instructor');
+	
+	foreach( $field_order as $field ){
+		$a_field = strtolower( $a->fields->{$field} );
+		$b_field = strtolower( $b->fields->{$field} );
+		
+		if( ($a_field != $b_field) && ($order == 0) ) {
+			$order =  ( $a_field > $b_field )? 1 : -1;
+		}
+	}
+	return $order;
+}
+
+/**
+ * Sort the displayed attachments by fields
+ *
+ * @param array $attachments Post attachments
+ * @return array Filtered attachments
+ * @since 1.1.1
+ */
+function ufclas_syllabus_get_attachments( $attachments ){
+	usort( $attachments, 'ufclas_syllabus_attachments_sort' );
+	return $attachments;
+}
+add_filter( 'attachments_get_syllabus_attachments', 'ufclas_syllabus_get_attachments' );
 
 
 /*====================================================/
