@@ -2,12 +2,12 @@
 /*
 Plugin Name: UF CLAS - Syllabus
 Plugin URI: https://it.clas.ufl.edu/
-Description: Manage syllabi for department sites
-Version: 1.1.1
+Description: Manage syllabuses for department sites
+Version: 1.1.2
 Author: Priscilla Chapman (CLAS IT)
 Author URI: https://it.clas.ufl.edu/
 License: GPL2
-Build Date: 20160913
+Build Date: 20161103
 */
 
 // Path to the root of the plugin, used for including template files
@@ -89,19 +89,19 @@ function ufclas_register_syllabus() {
 
 	// Register custom post type
 	$cpt_labels = array(
-		'name'                => _x( 'Course Syllabi', 'Syllabus Archive', 'ufclas' ),
-		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas' ),
-		'menu_name'           => __( 'Syllabus', 'ufclas' ),
-		'parent_item_colon'   => __( 'Parent Item', 'ufclas' ),
-		'all_items'           => __( 'All Syllabus Pages', 'ufclas' ),
-		'view_item'           => __( 'View Syllabus Page', 'ufclas' ),
-		'add_new_item'        => __( 'Add New Syllabus', 'ufclas' ),
-		'add_new'             => __( 'Add New Syllabus', 'ufclas' ),
-		'edit_item'           => __( 'Edit Syllabi', 'ufclas' ),
-		'update_item'         => __( 'Update Item', 'ufclas' ),
-		'search_items'        => __( 'Search Item', 'ufclas' ),
-		'not_found'           => __( 'Not found', 'ufclas' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'ufclas' ),
+		'name'                => _x( 'Course Syllabuses', 'Syllabus Archive', 'ufclas_syllabus' ),
+		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas_syllabus' ),
+		'menu_name'           => __( 'Syllabus', 'ufclas_syllabus' ),
+		'parent_item_colon'   => __( 'Parent Item', 'ufclas_syllabus' ),
+		'all_items'           => __( 'All Syllabus Pages', 'ufclas_syllabus' ),
+		'view_item'           => __( 'View Syllabus Page', 'ufclas_syllabus' ),
+		'add_new_item'        => __( 'Add New Syllabus', 'ufclas_syllabus' ),
+		'add_new'             => __( 'Add New Syllabus', 'ufclas_syllabus' ),
+		'edit_item'           => __( 'Edit Syllabus', 'ufclas_syllabus' ),
+		'update_item'         => __( 'Update Item', 'ufclas_syllabus' ),
+		'search_items'        => __( 'Search Item', 'ufclas_syllabus' ),
+		'not_found'           => __( 'Not found', 'ufclas_syllabus' ),
+		'not_found_in_trash'  => __( 'Not found in Trash', 'ufclas_syllabus' ),
 	);
 	$cpt_rewrite = array(
 		'slug'                => 'syllabus',
@@ -110,8 +110,8 @@ function ufclas_register_syllabus() {
 		'feeds'               => false,
 	);
 	$cpt_args = array(
-		'label'               => __( 'ufclas_syllabus', 'ufclas' ),
-		'description'         => __( 'Post Type for course syllabi', 'ufclas' ),
+		'label'               => __( 'ufclas_syllabus', 'ufclas_syllabus' ),
+		'description'         => __( 'Post Type for course syllabuses', 'ufclas_syllabus' ),
 		'labels'              => $cpt_labels,
 		'supports'            => array( 'title', 'editor' ),
 		'taxonomies'          => array('ufclas_syllabus_semester', 'ufclas_syllabus_year'),
@@ -202,25 +202,25 @@ function syllabus_attachments( $attachments )
     array(
       'name'      => 'syllabus_course_number', 
       'type'      => 'text',       
-      'label'     => __( 'Course Number/Section', 'ufclas' ),
+      'label'     => __( 'Course Number/Section', 'ufclas_syllabus' ),
       'default'   => '',
     ),
 	array(
       'name'      => 'syllabus_section', 
       'type'      => 'text',       
-      'label'     => __( 'Section', 'ufclas' ),
+      'label'     => __( 'Section', 'ufclas_syllabus' ),
       'default'   => '',
     ),
     array(
       'name'      => 'title',                         // unique field name
       'type'      => 'text',                          // registered field type
-      'label'     => __( 'Title', 'ufclas' ),    // label to display
+      'label'     => __( 'Title', 'ufclas_syllabus' ),    // label to display
       'default'   => 'title',                         // default value upon selection
     ),
     array(
       'name'      => 'syllabus_instructor', 
       'type'      => 'text',       
-      'label'     => __( 'Instructor(s)', 'ufclas' ),
+      'label'     => __( 'Instructor(s)', 'ufclas_syllabus' ),
       'default'   => '',
     ),
   );
@@ -250,10 +250,10 @@ function syllabus_attachments( $attachments )
     'append'        => true,
 
     // text for 'Attach' button in meta box (string)
-    'button_text'   => __( 'Attach Syllabus Files', 'ufclas' ),
+    'button_text'   => __( 'Attach Syllabus Files', 'ufclas_syllabus' ),
 
     // text for modal 'Attach' button (string)
-    'modal_text'    => __( 'Attach', 'ufclas' ),
+    'modal_text'    => __( 'Attach', 'ufclas_syllabus' ),
 
     // which tab should be the default in the modal (string) (browse|upload)
     'router'        => 'browse',
