@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name: UF CLAS - Syllabus
+Plugin Name: UFCLAS Syllabus
 Plugin URI: https://it.clas.ufl.edu/
 Description: Manage syllabuses for department sites
-Version: 1.1.2
+Version: 1.2.1
 Author: Priscilla Chapman (CLAS IT)
 Author URI: https://it.clas.ufl.edu/
 License: GPL2
-Build Date: 20161103
+Build Date: 20161215
 */
 
 // Path to the root of the plugin, used for including template files
