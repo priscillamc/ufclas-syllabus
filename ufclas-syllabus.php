@@ -3,16 +3,15 @@
 Plugin Name: UFCLAS Syllabus
 Plugin URI: https://it.clas.ufl.edu/
 Description: Manage syllabuses for department sites
-Version: 1.2.1
-Author: Priscilla Chapman (CLAS IT)
-Author URI: https://it.clas.ufl.edu/
+Version: 2.0
+Author: Priscilla Chapman (priscillamc)
+Author URI: https://it.chem.ufl.edu
 License: GPL2
-Build Date: 20161215
+Build Date: 20180816
 */
 
 // Path to the root of the plugin, used for including template files
 define( 'UFCLAS_SYLLABUS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-require UFCLAS_SYLLABUS_PLUGIN_DIR . 'inc/class-ufclas-syllabus-loader.php';
 
 /**
  * Register Syllabus page custom post type
@@ -89,7 +88,7 @@ function ufclas_register_syllabus() {
 
 	// Register custom post type
 	$cpt_labels = array(
-		'name'                => _x( 'Course Syllabuses', 'Syllabus Archive', 'ufclas_syllabus' ),
+		'name'                => _x( 'Course Syllabi', 'Syllabus Archive', 'ufclas_syllabus' ),
 		'singular_name'       => _x( 'Syllabus Page', 'Syllabus Archive pages', 'ufclas_syllabus' ),
 		'menu_name'           => __( 'Syllabus', 'ufclas_syllabus' ),
 		'parent_item_colon'   => __( 'Parent Item', 'ufclas_syllabus' ),
@@ -331,33 +330,13 @@ function ufclas_syllabus_remove_plugin_metaboxes() {
 add_action('do_meta_boxes', 'ufclas_syllabus_remove_plugin_metaboxes'); 
 
 /**
- * Add custom templates depending on theme
- * @since 0.0.4
- */
-function ufclas_syllabus_templates( $template_path ){
-	
-	// Change template for archive page if files exist in theme
-	if( is_singular( 'ufclas_syllabus' ) ){
-		$templates = new UFCLAS_Syllabus_Template_Loader;
-		$template_path = $templates->get_template_part( 'single', 'syllabus', false );
-	}
-	if( is_post_type_archive( 'ufclas_syllabus' ) || is_tax('ufclas_syllabus_year') ){
-		$templates = new UFCLAS_Syllabus_Template_Loader;
-		$template_path = $templates->get_template_part( 'archive', 'syllabus', false );
-	}
-	return $template_path;
-}
-add_filter( 'template_include', 'ufclas_syllabus_templates', 1 );
-
-/**
  * Add ufclas-syllabus shortcode
  * @todo Add parameters so shortcode can be used on any page
  * @since 1.1.0
  */
 function ufclas_syllabus_shortcode() {
-	$template_loader = new UFCLAS_Syllabus_Template_Loader;
 	ob_start();
-	$template_loader->get_template_part( 'content', 'syllabus' );
+	include UFCLAS_SYLLABUS_PLUGIN_DIR . 'templates/content-syllabus.php';
 	return ob_get_clean();
 }
 add_shortcode( 'ufclas-syllabus', 'ufclas_syllabus_shortcode' );
@@ -379,3 +358,20 @@ function ufclas_syllabus_content( $content ) {
 	return $content;
 }
 add_filter( 'the_content', 'ufclas_syllabus_content' );
+
+/**
+ * Change the archive title
+ * 
+ * @param  string $title
+ * @return string
+ * @since 2.0
+ */
+function ufclas_syllabus_archive_title( $title ) {
+    if ( is_post_type_archive() ) {
+        $title = post_type_archive_title( '', false );
+    } elseif ( is_tax() ) {
+        $title = single_term_title( '', false );
+    }
+    return $title;
+}
+add_filter( 'get_the_archive_title', 'ufclas_syllabus_archive_title' );
